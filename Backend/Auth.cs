@@ -12,10 +12,11 @@ namespace Part2_Raceday.Backend
             string message = string.Empty;
 
             //Path to the MSSQL Database
-            string connection_string = @"Data source=(localdb)\Race_Day_DB;database=RACEDAY_DB;";
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
+                //Creating a connect object
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {
                     //Opens connection
@@ -89,24 +90,83 @@ namespace Part2_Raceday.Backend
             }
             catch (Exception error)
             {
+                //Returns an error
                 message = error.Message;
             }
 
+            //returns a message
+            return message;
+        }
+
+        public string user_auth_login(string LoginEmail, string LoginPassword)
+        {
+            //Variable declearation
+            string message = string.Empty;
+
+            //Path to the MSSQL Database
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+
+            try
+            {
+                //Creating a connect object
+                using (SqlConnection connect = new SqlConnection(connection_string))
+                {
+                    //Opens connection
+                    connect.Open();
+
+                    //SQL query
+                    string query = @"SELECT PasswordHash FROM Users WHERE Email = @Email;";
+                    object results = null;
+
+                    //running the SQL query
+                    using (SqlCommand run_query = new SqlCommand(query, connect))
+                    {
+                        run_query.Parameters.AddWithValue("@Email", LoginEmail.Trim());
+                        results = run_query.ExecuteScalar();
+                    }
+
+                    //Checkinh if the results is null
+                    if (results == null)
+                    {
+                        message = "Invalid email or password.";
+                    }
+                    else
+                    {
+                        string password_hash = results.ToString();
+
+                        if (BCrypt.Net.BCrypt.Verify(LoginPassword, password_hash))
+                        {
+                            message = "Welcome user";
+                        }
+                        else
+                        {
+                            message = "Invalid email or password.";
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                //Returns an error
+                message = error.Message;
+            }
+            //returns a message
             return message;
         }
 
 
 
-        //It runs a "SELECT *" for the emails
+        //This Method runs a "SELECT *" for the emails
         public List<string> email_checker()
         {
             List<string> emails = new List<string>();
 
             //Path to the MSSQL Database
-            string connection_string = @"Data source=(localdb)\Race_Day_DB;database=RACEDAY_DB;";
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
+                //Creating a connect object
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {
                     //Opens connection

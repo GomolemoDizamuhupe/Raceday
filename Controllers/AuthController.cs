@@ -17,6 +17,14 @@ namespace Part2_Raceday.Controllers
             return auth.user_auth_reg(name, surname, email, password_hash, role);
         }
 
+        //user logining in and auth the user if they are registered checking the email
+        [HttpPost("Login")]
+        public string login(string email, string password_hash)
+        {
+            Auth auth = new Auth();
+
+            return auth.user_auth_login(email, password_hash);
+        }
 
     }
 }
