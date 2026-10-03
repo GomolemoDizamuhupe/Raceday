@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Race_Day.database;
+using Part2_Raceday.Backend;
 
-namespace Race_Day.Controllers
+namespace Part2_Raceday
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -13,6 +13,14 @@ namespace Race_Day.Controllers
             Users users = new Users();
 
             return users.get_own_profile(userId);
+        }
+
+        [HttpPut("me")]
+        public string update_own_profile(int userId, string name, string surname, string email)
+        {
+            Users users = new Users();
+
+            return users.update_own_profile(userId, name, surname, email);
         }
 
     }
