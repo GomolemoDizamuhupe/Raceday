@@ -114,5 +114,46 @@ namespace Part2_Raceday.Backend
             return message;
         }
 
+        public string get_user_by_id(int userId)
+        {
+            string message = string.Empty;
+
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+
+            try
+            {
+                using (SqlConnection connect = new SqlConnection(connection_string))
+                {
+                    connect.Open();
+
+                    string query = @"SELECT Name, Surname, Role FROM Users WHERE UserId = @UserId;";
+
+                    using (SqlCommand run_query = new SqlCommand(query, connect))
+                    {
+                        run_query.Parameters.AddWithValue("@UserId", userId);
+
+                        using (SqlDataReader reader = run_query.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                message = "Name: " + reader.GetString(0) +
+                                           ", Surname: " + reader.GetString(1) +
+                                           ", Role: " + reader.GetString(2);
+                            }
+                            else
+                            {
+                                message = "User not found.";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                message = error.Message;
+            }
+
+            return message;
+        }
     }
 }

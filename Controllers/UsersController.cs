@@ -23,5 +23,12 @@ namespace Part2_Raceday
             return users.update_own_profile(userId, name, surname, email);
         }
 
+        [HttpGet("{userId}")]
+        public string get_user_by_id(int userId)
+        {
+            Users users = new Users();
+
+            return users.get_user_by_id(userId);
+        }
     }
 }
