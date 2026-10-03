@@ -1,13 +1,19 @@
 ﻿using Microsoft.Data.SqlClient;
+using Part2_Raceday.Backend;
+
 
 namespace Part2_Raceday.Backend
 {
     public class Users
     {
-        public List<string> return_specific_user(int id)
+        Auth auth = new Auth();
+
+
+        public string get_own_profile(int userId)
         {
-            List<string> user = new List<string>();
-            string connection_string = @"Data source=(localdb)\Race_Day_DB;database=RACEDAY_DB;";
+            string message = string.Empty;
+
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
@@ -15,36 +21,36 @@ namespace Part2_Raceday.Backend
                 {
                     connect.Open();
 
-
-                    string query = "SELECT * FROM Users WHERE UserId = @UserId;";
+                    string query = @"SELECT Name, Surname, Email, Role FROM Users WHERE UserId = @UserId;";
 
                     using (SqlCommand run_query = new SqlCommand(query, connect))
                     {
-                        run_query.Parameters.AddWithValue("@UserId", id);
+                        run_query.Parameters.AddWithValue("@UserId", userId);
 
                         using (SqlDataReader reader = run_query.ExecuteReader())
                         {
-                            while (reader.Read())
+                            if (reader.Read())
                             {
-                                if (!reader.IsDBNull(0))
-                                    user.Add(reader.GetString(1));
+                                message = "Name: " + reader.GetString(0) +
+                                           ", Surname: " + reader.GetString(1) +
+                                           ", Email: " + reader.GetString(2) +
+                                           ", Role: " + reader.GetString(3);
+                            }
+                            else
+                            {
+                                message = "User not found.";
                             }
                         }
                     }
-
-                    connect.Close();
                 }
             }
             catch (Exception error)
             {
-                user.Add(error.Message);
+                message = error.Message;
             }
 
-            return user;
+            return message;
         }
-
-
-
 
 
     }

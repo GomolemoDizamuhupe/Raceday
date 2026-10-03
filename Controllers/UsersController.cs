@@ -1,19 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Part2_Raceday.Backend;
+﻿using Microsoft.AspNetCore.Mvc;
+using Race_Day.database;
 
-namespace Part2_Raceday.Controllers
+namespace Race_Day.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class users_controller : ControllerBase
     {
-
-        [HttpGet]
-        public List<string> return_specific_user(int id)
+        [HttpGet("me")]
+        public string get_own_profile(int userId)
         {
             Users users = new Users();
-            return users.return_specific_user(id);
+
+            return users.get_own_profile(userId);
         }
 
     }
