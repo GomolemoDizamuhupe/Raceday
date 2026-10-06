@@ -19,6 +19,14 @@ namespace Part2_Raceday.Controllers
         }
 
 
+        [HttpPut("{eventId}")]
+        public string updating_events(int eventId, int organiser_id, string name, string description, string event_date, string location)
+        {
+            Events events = new Events();
+
+            return events.editing_event(eventId, organiser_id, name, description, event_date, location);
+        }
+
         [HttpDelete("{eventId}")]
         public string removing_events(int eventId, int organiser_id)
         {
@@ -26,7 +34,6 @@ namespace Part2_Raceday.Controllers
 
             return events.deleting_event(eventId, organiser_id);
         }
-
 
         [HttpGet("{EventId}")]
         public string displaying_an_event(int EventId)

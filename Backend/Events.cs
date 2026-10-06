@@ -67,6 +67,73 @@ namespace Part2_Raceday.Backend
         }
 
         
+        public string editing_event(int event_id, int organiser_id, string name, string description, string event_date, string location)
+        {
+            //Converting the string "event_date" to DateTime
+            Convert.ToDateTime(event_date);
+
+            //temp message
+            string message = string.Empty;
+
+            string role = role_valiation(organiser_id);
+            if (role == "Organiser")
+            {
+                //connection string to connect
+                string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+
+                //try and catch
+                try
+                {
+                    //then use the using method to prevent
+                    //memory leaks
+
+                    //sql connection is used for connecting to the database
+
+                    using (SqlConnection connect = new SqlConnection(connection_string))
+                    {
+                        connect.Open();
+
+                        //do a query to insert the user info
+                        string query = string.Empty;
+
+                        query = @"UPDATE Events SET Name = '" + name + "'," +
+                                                    "Description = '" + description + "'," +
+                                                    "EventDate = '" + event_date + "'," +
+                                                    "Location = '" + location + "'" +
+                                                    "WHERE OrganiserId = '" + organiser_id + "'" +
+                                                    "AND EventId = '" + event_id + "';";
+
+                        //crearing sn instance to run the query
+                        //using SqlCommand
+                        SqlCommand run_query = new SqlCommand(query, connect);
+
+                        //run non-query
+                        run_query.ExecuteNonQuery();
+
+                        //message
+                        message = "Event Updated Successfully.";
+
+                        //then closing the connection
+                        connect.Close();
+                    }
+                }
+                catch (Exception error)
+                {
+                    //error messages
+                    message = error.Message;
+                }
+            }
+            else
+            {
+                message = "Event can not be edited because of your role. You are not a organiser.";
+            }
+            //return the message
+
+            return message;
+        }
+
+
+
         public string deleting_event(int event_id, int organiser_id)
         {
             //temp message
@@ -121,6 +188,7 @@ namespace Part2_Raceday.Backend
 
             return message;
         }
+
 
 
         public string viewing_event_using_eventid(int event_id)
