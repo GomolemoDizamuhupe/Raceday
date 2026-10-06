@@ -18,5 +18,14 @@ namespace Part2_Raceday.Controllers
             return events.uploading_event(organiser_id, name, description, event_date, location);
         }
 
+
+        [HttpGet("{EventId}")]
+        public string displaying_an_event(int EventId)
+        {
+            Events events = new Events();
+
+            return events.viewing_event_using_eventid(EventId);
+        }
+
     }
 }
