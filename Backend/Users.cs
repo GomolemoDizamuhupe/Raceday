@@ -6,9 +6,6 @@ namespace Part2_Raceday.Backend
 {
     public class Users
     {
-        Auth auth = new Auth();
-
-
         public string get_own_profile(int userId)
         {
             string message = string.Empty;
