@@ -190,6 +190,71 @@ namespace Part2_Raceday.Backend
         }
 
 
+        public List <string> viewing_event()
+        {
+            //temp message
+            List <string> message = new List<string>();
+
+            //connection string to connect
+            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+
+            //try and catch
+            try
+            {
+                //then use the using method to prevent
+                //memory leaks
+                //sql connection is used for connecting to the database
+                using (SqlConnection connect = new SqlConnection(connection_string))
+                {
+                    connect.Open();
+
+                    //do a query to insert the user info
+                    string query = string.Empty;
+
+                    query = @"SELECT * FROM Events;";
+
+                    //crearing sn instance to run the query
+                    //using SqlCommand
+                    using (SqlCommand run_query = new SqlCommand(query, connect))
+                    {
+
+                        using (SqlDataReader reader = run_query.ExecuteReader())
+                        {
+
+                            if (reader.Read())
+                            {
+                                do
+                                {
+                                    message.Add("Name: " + reader["Name"] + ", " +
+                                              "Description: " + reader["Description"] + ", " +
+                                              "EventDate: " + Convert.ToDateTime(reader["EventDate"]).ToString("yyyy-MM-dd") + ", " +
+                                              "Location: " + reader["Location"]);
+                                }while (reader.Read());
+                            }
+                            else
+                            {
+                                //message
+                                message.Add("There is Events not found.");
+                            }
+                        }
+                    }
+
+                    //then closing the connection
+                    connect.Close();
+                }
+            }
+            catch (Exception error)
+            {
+                //error messages
+                //message = error.Message;
+
+                message.Add(error.Message);
+            }
+            //return the message
+
+            return message;
+        }
+
 
         public string viewing_event_using_eventid(int event_id)
         {

@@ -35,6 +35,14 @@ namespace Part2_Raceday.Controllers
             return events.deleting_event(eventId, organiser_id);
         }
 
+        [HttpGet]
+        public List <string> displaying_all_events()
+        {
+            Events events = new Events();
+
+            return events.viewing_event();
+        }
+
         [HttpGet("{EventId}")]
         public string displaying_an_event(int EventId)
         {
