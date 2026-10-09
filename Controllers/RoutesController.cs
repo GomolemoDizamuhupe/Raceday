@@ -9,7 +9,13 @@ namespace Part2_Raceday.Controllers
     public class RoutesController : ControllerBase
     {
 
+        [HttpGet("{categoryId}route")]
+        public string get_route_for_category(int categoryId) 
+        {
+            Routes routes = new Routes();
 
+            return routes.get_route_for_category(categoryId);
+        }
 
     }
 }
