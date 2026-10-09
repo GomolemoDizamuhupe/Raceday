@@ -5,6 +5,8 @@ namespace Part2_Raceday.Backend
 {
     public class Events
     {
+        //connection string to connect
+        private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
         public string uploading_event(int organiser_id, string name, string description, string event_date, string location)
         {
@@ -17,8 +19,6 @@ namespace Part2_Raceday.Backend
             string role = role_valiation(organiser_id);
             if (role == "Organiser")
             {
-                //connection string to connect
-                string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
                 //try and catch
                 try
                 {
@@ -78,8 +78,6 @@ namespace Part2_Raceday.Backend
             string role = role_valiation(organiser_id);
             if (role == "Organiser")
             {
-                //connection string to connect
-                string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
                 //try and catch
                 try
@@ -141,8 +139,6 @@ namespace Part2_Raceday.Backend
             string role = role_valiation(organiser_id);
             if (role == "Organiser")
             {
-                //connection string to connect
-                string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
                 //try and catch
                 try
@@ -194,9 +190,6 @@ namespace Part2_Raceday.Backend
         {
             //temp message
             List <string> message = new List<string>();
-
-            //connection string to connect
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             //try and catch
             try
@@ -261,10 +254,6 @@ namespace Part2_Raceday.Backend
             //temp message
             string message = string.Empty;
 
-            //connection string to connect
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
-
-
             //try and catch
             try
             {
@@ -323,8 +312,6 @@ namespace Part2_Raceday.Backend
 
         public string role_valiation(int id)
         {
-            //connection string to connect
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
             string role = string.Empty;
 
             try

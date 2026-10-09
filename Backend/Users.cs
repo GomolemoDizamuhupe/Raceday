@@ -6,11 +6,12 @@ namespace Part2_Raceday.Backend
 {
     public class Users
     {
+
+        private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+
         public string get_own_profile(int userId)
         {
             string message = string.Empty;
-
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
@@ -52,8 +53,6 @@ namespace Part2_Raceday.Backend
         public string update_own_profile(int userId, string name, string surname, string email)
         {
             string message = string.Empty;
-
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
@@ -114,8 +113,6 @@ namespace Part2_Raceday.Backend
         public string get_user_by_id(int userId)
         {
             string message = string.Empty;
-
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {

@@ -12,7 +12,7 @@ namespace Part2_Raceday.Backend
             string message = string.Empty;
 
             //Path to the MSSQL Database
-            string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+            string connection_string =                                                                                               @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
