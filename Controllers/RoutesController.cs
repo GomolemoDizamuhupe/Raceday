@@ -26,5 +26,14 @@ namespace Part2_Raceday.Controllers
             return routes.uploading_route(categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
         }
 
+        [HttpPut("{RouteId}")]
+        public string updating_route(int OrganiserId, int RouteId, int categoryId, string StartPoint, string EndPoint, int ElevationGainM, string MapUrl)
+        {
+            Routes routes = new Routes();
+
+            return routes.editing_route(OrganiserId, RouteId, categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
+        }
+
+
     }
 }
