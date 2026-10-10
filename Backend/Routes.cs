@@ -91,7 +91,7 @@ namespace Part2_Raceday.Backend
             string message = string.Empty;
 
             string role = events.role_valiation(OrganiserId);
-            if (role == "Organiser")
+            if (role == "organiser")
             {
                 try
                 {

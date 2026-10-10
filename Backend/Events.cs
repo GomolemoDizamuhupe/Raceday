@@ -17,7 +17,7 @@ namespace Part2_Raceday.Backend
             string message = string.Empty;
 
             string role = role_valiation(organiser_id);
-            if (role == "Organiser")
+            if (role == "organiser")
             {
                 //try and catch
                 try
@@ -76,7 +76,7 @@ namespace Part2_Raceday.Backend
             string message = string.Empty;
 
             string role = role_valiation(organiser_id);
-            if (role == "Organiser")
+            if (role == "organiser")
             {
 
                 //try and catch
@@ -137,7 +137,7 @@ namespace Part2_Raceday.Backend
             //temp message
             string message = string.Empty;
             string role = role_valiation(organiser_id);
-            if (role == "Organiser")
+            if (role == "organiser")
             {
 
                 //try and catch
@@ -349,7 +349,7 @@ namespace Part2_Raceday.Backend
             }
 
             //returing the role
-            return role;
+            return role.ToLower();
         }
 
 
