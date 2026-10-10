@@ -178,5 +178,44 @@ namespace Part2_Raceday.Backend
         }
 
 
+        public string deleting_entry(int EntryId, int ParticipantId)
+        {
+            string message = string.Empty;
+
+            string role = events.role_valiation(ParticipantId);
+
+            if (role == "participant")
+            {
+                try
+                {
+                    using (SqlConnection connect = new SqlConnection(connection_string))
+                    {
+                        connect.Open();
+
+                        string query = "DELETE Entries WHERE EntryId = @EntryId AND ParticipantId = @ParticipantId;";
+
+                        using (SqlCommand run_query = new SqlCommand(query, connect))
+                        {
+                            run_query.Parameters.AddWithValue("@ParticipantId", ParticipantId);
+                            run_query.Parameters.AddWithValue("@EntryId", EntryId);
+
+                            run_query.ExecuteNonQuery();
+                            message = "Participant Withdraws From A Event Successfully.";
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    message = error.Message;
+                }
+            }
+            else
+            {
+                message = "User can not Withdraw From the Event because of they don't exist in the event.";
+            }
+            return message;
+        }
+
+
     }
 }

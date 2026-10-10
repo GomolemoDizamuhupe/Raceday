@@ -33,5 +33,13 @@ namespace Part2_Raceday.Controllers
             return entries.displaying_organiser_event_entries(OrganiserId, EventId);
         }
 
+        [HttpDelete("{EntryId}")]
+        public string deleteing_participant_entry(int EntryId, int ParticipantId)
+        {
+            Entries entries = new Entries();
+
+            return entries.deleting_entry(EntryId, ParticipantId);
+        }
+
     }
 }
