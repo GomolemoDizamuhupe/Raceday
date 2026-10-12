@@ -9,12 +9,12 @@ namespace Part2_Raceday.Controllers
     public class EventsController : ControllerBase
     {
 
+        Events events = new Events();
+
         //Event table
         [HttpPost]
         public string adding_events(int organiser_id, string name, string description, string event_date, string location)
         {
-            Events events = new Events();
-
             return events.uploading_event(organiser_id, name, description, event_date, location);
         }
 
@@ -22,32 +22,24 @@ namespace Part2_Raceday.Controllers
         [HttpPut("{eventId}")]
         public string updating_events(int eventId, int organiser_id, string name, string description, string event_date, string location)
         {
-            Events events = new Events();
-
             return events.editing_event(eventId, organiser_id, name, description, event_date, location);
         }
 
         [HttpDelete("{eventId}")]
         public string removing_events(int eventId, int organiser_id)
         {
-            Events events = new Events();
-
             return events.deleting_event(eventId, organiser_id);
         }
 
         [HttpGet]
         public List <string> displaying_all_events()
         {
-            Events events = new Events();
-
             return events.viewing_event();
         }
 
         [HttpGet("{EventId}")]
         public string displaying_an_event(int EventId)
         {
-            Events events = new Events();
-
             return events.viewing_event_using_eventid(EventId);
         }
 

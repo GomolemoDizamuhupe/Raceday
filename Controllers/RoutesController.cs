@@ -8,12 +8,11 @@ namespace Part2_Raceday.Controllers
     [ApiController]
     public class RoutesController : ControllerBase
     {
+        Routes routes = new Routes();
 
         [HttpGet("{categoryId}route")]
         public string get_route_for_category(int categoryId) 
         {
-            Routes routes = new Routes();
-
             return routes.get_route_for_category(categoryId);
         }
 
@@ -21,16 +20,12 @@ namespace Part2_Raceday.Controllers
         [HttpPost("{categoryId}route")]
         public string creating_route(int categoryId, string StartPoint, string EndPoint, int ElevationGainM, string MapUrl)
         {
-            Routes routes = new Routes();
-
             return routes.uploading_route(categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
         }
 
         [HttpPut("{RouteId}")]
         public string updating_route(int OrganiserId, int RouteId, int categoryId, string StartPoint, string EndPoint, int ElevationGainM, string MapUrl)
         {
-            Routes routes = new Routes();
-
             return routes.editing_route(OrganiserId, RouteId, categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
         }
 

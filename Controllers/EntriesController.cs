@@ -9,35 +9,29 @@ namespace Part2_Raceday.Controllers
     public class EntriesController : ControllerBase
     {
 
+        Entries entries = new Entries();
+
         [HttpPost("/categories/{CategoryId}/entries")]
         public string adding_participant_entry(int ParticipantId, string CategoryId, string EntryDate, string Status) 
         {
-            Entries entries = new Entries();
-
             return entries.uploading_entry(ParticipantId, CategoryId, EntryDate, Status);
         }
 
         [HttpGet]
         public List<string> getting_participant_entries(int ParticipantId)
         {
-            Entries entries = new Entries();
-
             return entries.get_participant_event_entries(ParticipantId);
         }
 
         [HttpGet("{EventId}")]
         public List<string> getting_organiser_event_entries(int OrganiserId, int EventId)
         {
-            Entries entries = new Entries();
-
             return entries.displaying_organiser_event_entries(OrganiserId, EventId);
         }
 
         [HttpDelete("{EntryId}")]
         public string deleteing_participant_entry(int EntryId, int ParticipantId)
         {
-            Entries entries = new Entries();
-
             return entries.deleting_entry(EntryId, ParticipantId);
         }
 

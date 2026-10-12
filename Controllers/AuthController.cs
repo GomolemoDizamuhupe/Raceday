@@ -8,12 +8,13 @@ namespace Part2_Raceday.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+
+        Auth auth = new Auth();
+
         //Registering the user and auth the user if they are registered checking the email
         [HttpPost("Register")]
         public string register(string name, string surname, string email, string password_hash, string role)
         {
-            Auth auth = new Auth();
-
             return auth.user_auth_reg(name, surname, email, password_hash, role);
         }
 
@@ -21,8 +22,6 @@ namespace Part2_Raceday.Controllers
         [HttpPost("Login")]
         public string login(string email, string password_hash)
         {
-            Auth auth = new Auth();
-
             return auth.user_auth_login(email, password_hash);
         }
 
