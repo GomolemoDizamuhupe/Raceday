@@ -58,6 +58,48 @@ namespace Part2_Raceday.Backend
         }
 
 
+        public string updating_entry(int ResultId, string FinishTime, int Position, int OrganiserId)
+        {
+            string message = string.Empty;
+
+            //Converting the string "FinishTime" to DateTime using the format "HH:mm:ss"
+            Convert.ToDateTime(FinishTime).ToString("HH:mm:ss");
+
+            string role = events.role_valiation(OrganiserId);
+
+            if (role == "organiser")
+            {
+                try
+                {
+                    using (SqlConnection connect = new SqlConnection(connection_string))
+                    {
+                        connect.Open();
+
+                        string query = "UPDATE Results SET FinishTime = @FinishTime, Position = @Position WHERE ResultId = @ResultId;";
+
+                        using (SqlCommand run_query = new SqlCommand(query, connect))
+                        {
+                            run_query.Parameters.AddWithValue("@OrganiserId", OrganiserId);
+                            run_query.Parameters.AddWithValue("@FinishTime", FinishTime);
+                            run_query.Parameters.AddWithValue("@Position", Position);
+                            run_query.Parameters.AddWithValue("@ResultId", ResultId);
+
+                            run_query.ExecuteNonQuery();
+                            message = "Organiser Has updated the Results of a participant Successfully.";
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    message = error.Message;
+                }
+            }
+            else
+            {
+                message = "Results Has not been updated Unsuccessfully because it doesn't exist.";
+            }
+            return message;
+        }
 
 
     }

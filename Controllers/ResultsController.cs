@@ -17,6 +17,11 @@ namespace Part2_Raceday.Controllers
             return results.uploading_entry(EntryId, FinishTime, Position, OrganiserId);
         }
 
+        [HttpPut("{ResultId}")]
+        public string updating_participant_results(int ResultId, string FinishTime, int Position, int OrganiserId)
+        {
+            return results.updating_entry(ResultId, FinishTime, Position, OrganiserId);
+        }
 
 
     }
