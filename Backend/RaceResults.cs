@@ -193,6 +193,7 @@ namespace Part2_Raceday.Backend
                         using (SqlCommand run_query = new SqlCommand(query, connect))
                         {
                             run_query.Parameters.AddWithValue("@OrganiserId", OrganiserId);
+                            run_query.Parameters.AddWithValue("@EventId", EventId);
 
                             using (SqlDataReader reader = run_query.ExecuteReader())
                             {
