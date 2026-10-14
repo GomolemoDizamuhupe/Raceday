@@ -5,9 +5,11 @@ A full-stack web-based event management system for the South African road runnin
 **Module:** PROG6212
 **Student:** Gomolemo Dizamuhupe (ST10491441)
 **Group:** 4
-**GitHub Repo:** [GomolemoDizamuhupe/PROG6212-SQL-SCRIPT-](https://github.com/GomolemoDizamuhupe/PROG6212-SQL-SCRIPT-)
+**GitHub Repo:** [GomolemoDizamuhupe/Raceday](https://github.com/GomolemoDizamuhupe/Raceday)
 **Part 1 Demo Video:** https://youtu.be/ZRrgUtRMAuo
 **Part 2 Demo Video:** _add YouTube link here_
+**Part 1 Document:** [Database Schema, API Request Methods and ERD (PDF)](https://github.com/GomolemoDizamuhupe/Raceday/blob/master/DATABASE%20SCHEMA%2C%20API%20REQUEST%20METHODS%20AND%20ERD.pdf)
+**SQL Script:** [Race_day.sql](Race_day.sql)
 
 ## Project Structure
 
@@ -95,7 +97,7 @@ All routes start with `/api`.
 
 ### Running the API
 
-1. Run the SQL script from Part 1 in SSMS so the `Race_day` database exists on `(localdb)\MSSQLLocalDB`.
+1. Run [`Race_day.sql`](Race_day.sql) (the Part 1 script) in SSMS so the `Race_day` database exists on `(localdb)\MSSQLLocalDB`.
 2. Open the solution in Visual Studio.
 3. Set `Part2_Raceday` as the startup project and press F5.
 4. Use Swagger (opens automatically) to try the endpoints.
@@ -130,6 +132,8 @@ _Add the green build screenshot here:_
 
 ## Part 1 Summary
 
+The full Part 1 document is here: [Database Schema, API Request Methods and ERD (PDF)](https://github.com/GomolemoDizamuhupe/Raceday/blob/master/DATABASE%20SCHEMA%2C%20API%20REQUEST%20METHODS%20AND%20ERD.pdf)
+
 ### Entity Relationship Diagram
 Six entities: `User`, `Event`, `Category`, `Route`, `Entry`, `Result`.
 - User organises many Events (1:*)
@@ -142,7 +146,7 @@ Six entities: `User`, `Event`, `Category`, `Route`, `Entry`, `Result`.
 Covers Authentication, User Profile, Events, Categories, Routes, Entries, and Results, with method, route, role, request body, and expected responses for each.
 
 ### SQL Database Script
-Creates the full schema in SQL Server (`Users`, `Events`, `Categories`, `Routes`, `Entries`, `Results`) with primary keys, foreign keys, and constraints, seeded with sample data.
+[`Race_day.sql`](Race_day.sql) creates the full schema in SQL Server (`Users`, `Events`, `Categories`, `Routes`, `Entries`, `Results`) with primary keys, foreign keys, and constraints, seeded with sample data.
 
 ## Part 1 GitHub Action Screenshot
 <img width="1366" height="741" alt="image" src="https://github.com/user-attachments/assets/baf79d82-a07e-46c6-ad4e-6ff04a697aa2" />
