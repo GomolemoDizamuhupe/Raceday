@@ -125,11 +125,8 @@ To run them: `dotnet test`, or use Test Explorer in Visual Studio.
 
 GitHub Actions builds the solution and runs the tests on every push.
 
-_Add the green build screenshot here:_
+<img width="1366" height="653" alt="image" src="https://github.com/user-attachments/assets/1db71740-8708-4b36-bc8b-2c150543dffc" />
 
-```
-<img width="..." alt="Part 2 GitHub Actions" src="..." />
-```
 
 ## Part 1 Summary
 
