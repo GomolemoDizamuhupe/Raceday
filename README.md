@@ -7,7 +7,8 @@ A full-stack web-based event management system for the South African road runnin
 **Group:** 4
 **GitHub Repo:** [GomolemoDizamuhupe/Raceday](https://github.com/GomolemoDizamuhupe/Raceday)
 **Part 1 Demo Video:** https://youtu.be/ZRrgUtRMAuo
-**Part 2 Demo Video:** _add YouTube link here_
+**Part 2 Demo Video part 1:** https://youtu.be/2Glku9wPoys?si=DWxH7WVlUIkqNEPM
+**Part 2 Demo Video part 2:** https://youtu.be/ecFRMHqhjps?si=bTVxoylHGI99x0gy
 **Part 1 Document:** [Database Schema, API Request Methods and ERD (PDF)](https://github.com/GomolemoDizamuhupe/Raceday/blob/master/DATABASE%20SCHEMA%2C%20API%20REQUEST%20METHODS%20AND%20ERD.pdf)
 **SQL Script:** [Race_day.sql](Race_day.sql)
 
