@@ -28,21 +28,5 @@ namespace Part2_Raceday
             return users.get_user_by_id(userId);
         }
 
-        /*        public void Test1()
-        {
-
-            users textUsers = new users();
-
-            string name = "Gomolemo"; string surname = "Tom"; string email = "123abc098@gmail.com"; string password = "12312scfef@"; string role = "organiser";
-
-           string returned_results= textUsers.store_user_info(name, surname, email, password, role);
-            string expected = "user registered successfully...";
-
-
-            Assert.Equal(returned_results , expected);
-
-
-        }*/
-
     }
 }

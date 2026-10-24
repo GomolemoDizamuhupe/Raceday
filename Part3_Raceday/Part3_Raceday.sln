@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Part3_Raceday", "Part3_Raceday.csproj", "{0938D283-7473-40E8-B451-8C6067B44023}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0938D283-7473-40E8-B451-8C6067B44023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0938D283-7473-40E8-B451-8C6067B44023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0938D283-7473-40E8-B451-8C6067B44023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0938D283-7473-40E8-B451-8C6067B44023}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B749D29C-0E84-4B77-AFAF-D332AF6612AE}
+	EndGlobalSection
+EndGlobal
