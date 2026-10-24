@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Part3_Raceday.Models;
+using Part3_Raceday.Filters;
+using System.ComponentModel.DataAnnotations;
 
 namespace Part3_Raceday.Controllers
 {
@@ -13,11 +15,13 @@ namespace Part3_Raceday.Controllers
             _logger = logger;
         }
 
+        [RequireLogin]
         public IActionResult Index()
         {
             return View();
         }
 
+        [RequireLogin]
         public IActionResult Privacy()
         {
             return View();

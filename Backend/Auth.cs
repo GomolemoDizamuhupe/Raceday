@@ -1,18 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Backend
 {
     public class Auth
     {
+        private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
         public string user_auth_reg(string name, string surname, string email, string password, string role)
         {
             //Variable declearation
             string message = string.Empty;
-
-            //Path to the MSSQL Database
-            string connection_string =                                                                                               @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
 
             try
             {
@@ -195,6 +194,79 @@ namespace Part2_Raceday.Backend
             //returns all the emails
             return emails;
         }
+
+        /*************/
+
+        // > 0 = new UserId, -1 = email already registered
+        public int register_user(RegisterRequest req)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                using (SqlCommand exists = new SqlCommand("SELECT COUNT(*) FROM Users WHERE LOWER(Email) = @Email;", connect))
+                {
+                    exists.Parameters.AddWithValue("@Email", req.Email.Trim().ToLower());
+                    if ((int)exists.ExecuteScalar() > 0) return -1;
+                }
+
+                string hash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+
+                string insert = @"INSERT INTO Users (Name, Surname, Email, PasswordHash, Role)
+                          OUTPUT INSERTED.UserId
+                          VALUES (@Name, @Surname, @Email, @PasswordHash, @Role);";
+
+                using (SqlCommand cmd = new SqlCommand(insert, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Name", req.Name.Trim());
+                    cmd.Parameters.AddWithValue("@Surname", req.Surname.Trim());
+                    cmd.Parameters.AddWithValue("@Email", req.Email.Trim());
+                    cmd.Parameters.AddWithValue("@PasswordHash", hash);
+                    cmd.Parameters.AddWithValue("@Role", req.Role.Trim().ToLower());
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        // Returns the user if the email and password are correct, otherwise null
+        public UserDto? login_user(LoginRequest req)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = "SELECT UserId, Name, Surname, Email, PasswordHash, Role FROM Users WHERE LOWER(Email) = @Email;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Email", req.Email.Trim().ToLower());
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read()) return null;
+
+                        string hash = reader.GetString(4);
+
+                        bool valid;
+                        try { valid = BCrypt.Net.BCrypt.Verify(req.Password, hash); }
+                        catch { valid = false; }   // seeded placeholder hashes aren't valid BCrypt
+
+                        if (!valid) return null;
+
+                        return new UserDto
+                        {
+                            UserId = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Surname = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            Role = reader.GetString(5).ToLower()
+                        };
+                    }
+                }
+            }
+        }
+
+        /*************/
 
     }
 }
