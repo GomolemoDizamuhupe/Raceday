@@ -117,6 +117,18 @@ namespace Part3_Raceday.Controllers
             return RedirectToAction("MyEvents");
         }
 
+        public async Task<IActionResult> MyResults()
+        {
+            int userId = HttpContext.Session.GetInt32("UserId")!.Value;
+
+            var result = await _api.GetAsync<List<ApiRaceResult>>($"api/Results?participantId={userId}");
+
+            if (!result.Success)
+                ViewBag.Error = result.Message;
+
+            return View(result.Data ?? new List<ApiRaceResult>());
+        }
+
 
     }
 }

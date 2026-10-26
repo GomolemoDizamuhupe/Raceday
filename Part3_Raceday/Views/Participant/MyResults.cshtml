@@ -1,0 +1,60 @@
+﻿@model List<Part3_Raceday.Models.ApiRaceResult>
+@{
+    ViewData["Title"] = "My Results";
+
+    string Ordinal(int n)
+    {
+        int lastTwo = n % 100;
+        if (lastTwo >= 11 && lastTwo <= 13) return n + "th";
+        return (n % 10) switch { 1 => n + "st", 2 => n + "nd", 3 => n + "rd", _ => n + "th" };
+    }
+}
+
+<h2 class="mb-3">My Results</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No results yet. Results appear here after an organiser publishes them.</div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Distance</th>
+                <th>Finish time</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.EventName</td>
+                    <td>@r.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@r.CategoryName</td>
+                    <td>@r.DistanceKm km</td>
+                    <td>@r.FinishTime.ToString(@"hh\:mm\:ss")</td>
+                    <td>
+                        @if (r.Position != null)
+                        {
+                            <span class="badge bg-dark">@Ordinal(r.Position.Value) of @r.TotalFinishers</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not ranked</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
