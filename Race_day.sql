@@ -105,3 +105,6 @@ INSERT INTO Results (EntryId, FinishTime, Position) VALUES
 (1, '00:52:14', 34),
 (2, '00:49:02', 12),
 (3, '01:58:47', 87);
+
+ALTER TABLE Events ADD EventType VARCHAR(30) NULL, DistanceKm DECIMAL(5,2) NULL, BannerUrl VARCHAR(500) NULL;
+UPDATE Users SET Role = LOWER(Role);
