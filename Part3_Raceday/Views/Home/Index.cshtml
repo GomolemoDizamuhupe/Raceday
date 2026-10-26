@@ -2,5 +2,4 @@
     ViewData["Title"] = "Home";
 }
 <h2>Welcome @Context.Session.GetString("Name")</h2>
-<p>Role: @Context.Session.GetString("Role")</p>
-<a asp-controller="Account" asp-action="Logout">Log out</a>
+<p>You are logged in as <strong>@Context.Session.GetString("Role")</strong>.</p>

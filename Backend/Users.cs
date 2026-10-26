@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Part2_Raceday.Backend;
-
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Backend
 {
@@ -8,7 +8,64 @@ namespace Part2_Raceday.Backend
     {
 
         private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+        /*********************************************/
 
+
+        public UserDto? get_user_dto(int user_id)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SELECT UserId, Name, Surname, Email, Role FROM Users WHERE UserId = @UserId;", connect))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", user_id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read()) return null;
+
+                        return new UserDto
+                        {
+                            UserId = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Surname = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            Role = reader.GetString(4).ToLower()
+                        };
+                    }
+                }
+            }
+        }
+
+        // 1 = updated, 0 = user not found, -1 = email belongs to someone else
+        public int update_profile(int user_id, UpdateProfileRequest req)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                using (SqlCommand taken = new SqlCommand("SELECT COUNT(*) FROM Users WHERE LOWER(Email) = @Email AND UserId <> @UserId;", connect))
+                {
+                    taken.Parameters.AddWithValue("@Email", req.Email.Trim().ToLower());
+                    taken.Parameters.AddWithValue("@UserId", user_id);
+                    if ((int)taken.ExecuteScalar() > 0) return -1;
+                }
+
+                string query = "UPDATE Users SET Name = @Name, Surname = @Surname, Email = @Email WHERE UserId = @UserId;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Name", req.Name.Trim());
+                    cmd.Parameters.AddWithValue("@Surname", req.Surname.Trim());
+                    cmd.Parameters.AddWithValue("@Email", req.Email.Trim());
+                    cmd.Parameters.AddWithValue("@UserId", user_id);
+                    return cmd.ExecuteNonQuery() > 0 ? 1 : 0;
+                }
+            }
+        }
+
+        /*********************************************/
         public string get_own_profile(int userId)
         {
             string message = string.Empty;

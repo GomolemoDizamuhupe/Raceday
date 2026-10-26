@@ -31,7 +31,7 @@ namespace Part2_Raceday.Controllers
             return events.deleting_event(eventId, organiser_id);
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public List <string> displaying_all_events()
         {
             return events.viewing_event();
@@ -41,6 +41,23 @@ namespace Part2_Raceday.Controllers
         public string displaying_an_event(int EventId)
         {
             return events.viewing_event_using_eventid(EventId);
+        }*/
+
+        [HttpGet]
+        public IActionResult displaying_all_events()
+        {
+            return Ok(events.get_all_events());
+        }
+
+        [HttpGet("{EventId}")]
+        public IActionResult displaying_an_event(int EventId)
+        {
+            var ev = events.get_event_by_id(EventId);
+
+            if (ev == null)
+                return NotFound(new { message = "Event not found." });
+
+            return Ok(ev);
         }
 
     }

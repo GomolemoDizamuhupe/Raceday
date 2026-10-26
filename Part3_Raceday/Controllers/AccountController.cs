@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Part3_Raceday.Models;
 using Part3_Raceday.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Part3_Raceday.Controllers
 {
@@ -34,7 +35,9 @@ namespace Part3_Raceday.Controllers
             HttpContext.Session.SetString("Role", result.Data.Role);
             HttpContext.Session.SetString("Name", result.Data.Name);
 
-            return RedirectToAction("Index", "Home");
+            return result.Data.Role == "organiser"
+                ? RedirectToAction("Dashboard", "Organiser")
+                : RedirectToAction("Events", "Participant");
         }
 
         [HttpGet]
@@ -69,5 +72,6 @@ namespace Part3_Raceday.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+        public IActionResult AccessDenied() => View();
     }
 }

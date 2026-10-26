@@ -1,0 +1,68 @@
+﻿@model Part3_Raceday.Models.EventsListViewModel
+@{
+    ViewData["Title"] = "Upcoming Events";
+}
+
+<h2 class="mb-3">Upcoming Events</h2>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input name="search" value="@Model.Search" class="form-control" placeholder="Search by name or description" />
+    </div>
+    <div class="col-md-3">
+        <input name="location" value="@Model.Location" class="form-control" placeholder="Location" />
+    </div>
+    <div class="col-md-3">
+        <select name="type" class="form-select">
+            <option value="">All event types</option>
+            @foreach (var t in Model.Types)
+            {
+                <option value="@t" selected="@(t == Model.Type)">@t</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Events.Any() && Model.Error == null)
+{
+    <div class="alert alert-info">No upcoming events match your search.</div>
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var e in Model.Events)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if (!string.IsNullOrEmpty(e.BannerUrl))
+                {
+                    <img src="@e.BannerUrl" class="card-img-top" style="height:160px;object-fit:cover" alt="@e.Name banner" />
+                }
+                else
+                {
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height:160px">No banner</div>
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@e.Name</h5>
+                    <p class="mb-1"><strong>@e.EventDate.ToString("dd MMM yyyy")</strong></p>
+                    <p class="mb-1">@e.Location</p>
+                    @if (!string.IsNullOrEmpty(e.EventType))
+                    {
+                        <span class="badge bg-dark">@e.EventType</span>
+                    }
+                    @if (e.DistanceKm != null)
+                    {
+                        <span class="badge bg-secondary">@e.DistanceKm km</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

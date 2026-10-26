@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Backend
 {
@@ -7,6 +8,69 @@ namespace Part2_Raceday.Backend
     {
         //connection string to connect
         private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+        /**************************************************/
+
+        public List<EventDto> get_all_events()
+        {
+            var list = new List<EventDto>();
+
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = "SELECT EventId, OrganiserId, Name, Description, EventDate, Location FROM Events ORDER BY EventDate;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new EventDto
+                        {
+                            EventId = reader.GetInt32(0),
+                            OrganiserId = reader.GetInt32(1),
+                            Name = reader.GetString(2),
+                            Description = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            EventDate = reader.GetDateTime(4),
+                            Location = reader.GetString(5)
+                        });
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public EventDto? get_event_by_id(int event_id)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = "SELECT EventId, OrganiserId, Name, Description, EventDate, Location FROM Events WHERE EventId = @EventId;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@EventId", event_id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read()) return null;
+
+                        return new EventDto
+                        {
+                            EventId = reader.GetInt32(0),
+                            OrganiserId = reader.GetInt32(1),
+                            Name = reader.GetString(2),
+                            Description = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            EventDate = reader.GetDateTime(4),
+                            Location = reader.GetString(5)
+                        };
+                    }
+                }
+            }
+        }
+        /*************************************************/
 
         public string uploading_event(int organiser_id, string name, string description, string event_date, string location)
         {
