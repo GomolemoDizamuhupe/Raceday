@@ -1,0 +1,67 @@
+﻿@model List<Part3_Raceday.Models.ApiEntry>
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<h2 class="mb-3">My Events</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        You haven't entered any events yet.
+        <a asp-action="Events">Browse upcoming events</a>.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Distance</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var en in Model)
+            {
+                string badge = en.Status switch
+                {
+                    "Confirmed" => "bg-success",
+                    "Pending" => "bg-warning text-dark",
+                    _ => "bg-secondary"
+                };
+
+                <tr>
+                    <td><a asp-action="EventDetail" asp-route-id="@en.EventId">@en.EventName</a></td>
+                    <td>@en.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@en.CategoryName</td>
+                    <td>@en.DistanceKm km</td>
+                    <td><span class="badge @badge">@en.Status</span></td>
+                    <td class="text-end">
+                        <form asp-action="Withdraw" method="post" onsubmit="return confirm('Withdraw from this event?');">
+                            <input type="hidden" name="entryId" value="@en.EntryId" />
+                            <button class="btn btn-outline-danger btn-sm">Withdraw</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

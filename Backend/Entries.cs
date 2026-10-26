@@ -25,12 +25,19 @@ namespace Part2_Raceday.Backend
                 connect.Open();
 
                 int max;
-                using (SqlCommand cmd = new SqlCommand("SELECT MaxParticipants FROM Categories WHERE CategoryId = @CategoryId;", connect))
+                using (SqlCommand cmd = new SqlCommand(
+                    @"SELECT c.MaxParticipants, e.EventDate
+                      FROM Categories c JOIN Events e ON c.EventId = e.EventId
+                      WHERE c.CategoryId = @CategoryId;", connect))
                 {
                     cmd.Parameters.AddWithValue("@CategoryId", category_id);
-                    object? found = cmd.ExecuteScalar();
-                    if (found == null) return -2;
-                    max = (int)found;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read()) return -2;
+                        max = reader.GetInt32(0);
+                        if (reader.GetDateTime(1).Date < DateTime.Today) return -5;
+                    }
                 }
 
                 using (SqlCommand cmd = new SqlCommand(
@@ -59,6 +66,76 @@ namespace Part2_Raceday.Backend
                     cmd.Parameters.AddWithValue("@EntryDate", DateTime.Today);
                     return (int)cmd.ExecuteScalar();
                 }
+            }
+        }
+
+        // Returns null if the user is not a participant
+        public List<ParticipantEntryDto>? get_entries_for_participant(int participant_id)
+        {
+            if (events.role_valiation(participant_id) != "participant") return null;
+
+            var list = new List<ParticipantEntryDto>();
+
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = @"SELECT en.EntryId, en.CategoryId, en.EntryDate, en.Status,
+                                e.EventId, e.Name, e.EventDate, c.Name, c.DistanceKm
+                         FROM Entries en
+                         JOIN Categories c ON en.CategoryId = c.CategoryId
+                         JOIN Events e ON c.EventId = e.EventId
+                         WHERE en.ParticipantId = @ParticipantId
+                         ORDER BY e.EventDate;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ParticipantId", participant_id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ParticipantEntryDto
+                            {
+                                EntryId = reader.GetInt32(0),
+                                CategoryId = reader.GetInt32(1),
+                                EntryDate = reader.GetDateTime(2),
+                                Status = reader.GetString(3),
+                                EventId = reader.GetInt32(4),
+                                EventName = reader.GetString(5),
+                                EventDate = reader.GetDateTime(6),
+                                CategoryName = reader.GetString(7),
+                                DistanceKm = reader.GetDecimal(8)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        // 1 = deleted, 0 = not found, -1 = entry already has a result
+        public int delete_entry_by_id(int entry_id, int participant_id)
+        {
+            try
+            {
+                using (SqlConnection connect = new SqlConnection(connection_string))
+                {
+                    connect.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("DELETE FROM Entries WHERE EntryId = @EntryId AND ParticipantId = @ParticipantId;", connect))
+                    {
+                        cmd.Parameters.AddWithValue("@EntryId", entry_id);
+                        cmd.Parameters.AddWithValue("@ParticipantId", participant_id);
+                        return cmd.ExecuteNonQuery() > 0 ? 1 : 0;
+                    }
+                }
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                return -1;
             }
         }
 

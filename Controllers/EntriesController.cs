@@ -24,8 +24,34 @@ namespace Part2_Raceday.Controllers
                 -2 => NotFound(new { message = "Category not found." }),
                 -3 => Conflict(new { message = "You have already entered this category." }),
                 -4 => Conflict(new { message = "This category is full." }),
+                -5 => BadRequest(new { message = "This event has already taken place." }),
                 _ => Created($"/api/Entries?participantId={req.ParticipantId}", new { entryId = result })
             };
+        }
+
+        [HttpGet]
+        public IActionResult getting_participant_entries(int participantId)
+        {
+            var list = entries.get_entries_for_participant(participantId);
+
+            if (list == null)
+                return StatusCode(403, new { message = "Only participants have entries." });
+
+            return Ok(list);
+        }
+
+        [HttpDelete("{entryId}")]
+        public IActionResult deleteing_participant_entry(int entryId, int participantId)
+        {
+            int result = entries.delete_entry_by_id(entryId, participantId);
+
+            if (result == 0)
+                return NotFound(new { message = "Entry not found." });
+
+            if (result == -1)
+                return Conflict(new { message = "This entry already has a result and can't be withdrawn." });
+
+            return NoContent();
         }
 
         /*[HttpPost("/categories/{CategoryId}/entries")]
@@ -34,11 +60,11 @@ namespace Part2_Raceday.Controllers
             return entries.uploading_entry(ParticipantId, CategoryId, EntryDate, Status);
         }*/
 
-        [HttpGet]
+        /*[HttpGet]
         public List<string> getting_participant_entries(int ParticipantId)
         {
             return entries.get_participant_event_entries(ParticipantId);
-        }
+        }*/
 
         [HttpGet("{EventId}")]
         public List<string> getting_organiser_event_entries(int OrganiserId, int EventId)
@@ -46,11 +72,11 @@ namespace Part2_Raceday.Controllers
             return entries.displaying_organiser_event_entries(OrganiserId, EventId);
         }
 
-        [HttpDelete("{EntryId}")]
+        /*[HttpDelete("{EntryId}")]
         public string deleteing_participant_entry(int EntryId, int ParticipantId)
         {
             return entries.deleting_entry(EntryId, ParticipantId);
-        }
+        }*/
 
     }
 }

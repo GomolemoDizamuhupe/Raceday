@@ -90,6 +90,33 @@ namespace Part3_Raceday.Controllers
             return RedirectToAction("EventDetail", new { id = eventId });
         }
 
+        public async Task<IActionResult> MyEvents()
+        {
+            int userId = HttpContext.Session.GetInt32("UserId")!.Value;
+
+            var result = await _api.GetAsync<List<ApiEntry>>($"api/Entries?participantId={userId}");
+
+            if (!result.Success)
+                ViewBag.Error = result.Message;
+
+            return View(result.Data ?? new List<ApiEntry>());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Withdraw(int entryId)
+        {
+            int userId = HttpContext.Session.GetInt32("UserId")!.Value;
+
+            var result = await _api.DeleteAsync<object>($"api/Entries/{entryId}?participantId={userId}");
+
+            if (result.Success)
+                TempData["Success"] = "You have withdrawn from the event.";
+            else
+                TempData["Error"] = result.Message;
+
+            return RedirectToAction("MyEvents");
+        }
+
 
     }
 }

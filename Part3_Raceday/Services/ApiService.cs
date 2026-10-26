@@ -44,6 +44,12 @@ namespace Part3_Raceday.Services
             catch (HttpRequestException) { return Unreachable<T>(); }
         }
 
+        public async Task<ApiResult<T>> DeleteAsync<T>(string url)
+        {
+            try { return await ReadAsync<T>(await _http.DeleteAsync(url)); }
+            catch (HttpRequestException) { return Unreachable<T>(); }
+        }
+
         private static ApiResult<T> Unreachable<T>() =>
             new() { Success = false, Message = "Cannot reach the server. Please try again." };
 
