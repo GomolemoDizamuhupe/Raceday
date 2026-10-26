@@ -1,0 +1,55 @@
+﻿@model Part3_Raceday.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-3">My Profile</h2>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        <div class="text-center mb-3">
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+            {
+                <img src="@Model.ProfilePictureUrl" class="rounded-circle" style="width:120px;height:120px;object-fit:cover" alt="Profile picture" />
+            }
+            else
+            {
+                <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center"
+                     style="width:120px;height:120px;font-size:2.5rem">
+                    @Model.Name.Substring(0, 1).ToUpper()
+                </div>
+            }
+            <p class="text-muted mt-2">@Model.Role</p>
+        </div>
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form asp-action="Index" method="post">
+            <input type="hidden" asp-for="Role" />
+            <input type="hidden" asp-for="ProfilePictureUrl" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Surname" class="form-label"></label>
+                <input asp-for="Surname" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <button class="btn btn-primary">Save changes</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

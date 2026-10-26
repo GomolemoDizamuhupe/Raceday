@@ -38,6 +38,12 @@ namespace Part3_Raceday.Services
             catch (HttpRequestException) { return Unreachable<T>(); }
         }
 
+        public async Task<ApiResult<T>> PutAsync<T>(string url, object body)
+        {
+            try { return await ReadAsync<T>(await _http.PutAsJsonAsync(url, body, _json)); }
+            catch (HttpRequestException) { return Unreachable<T>(); }
+        }
+
         private static ApiResult<T> Unreachable<T>() =>
             new() { Success = false, Message = "Cannot reach the server. Please try again." };
 
