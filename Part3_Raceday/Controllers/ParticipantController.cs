@@ -53,5 +53,43 @@ namespace Part3_Raceday.Controllers
 
             return View(vm);
         }
+
+
+        public async Task<IActionResult> EventDetail(int id)
+        {
+            var ev = await _api.GetAsync<ApiEvent>($"api/Events/{id}");
+
+            if (!ev.Success || ev.Data == null)
+            {
+                TempData["Error"] = ev.Message;
+                return RedirectToAction("Events");
+            }
+
+            var cats = await _api.GetAsync<List<ApiCategory>>($"api/Categories/{id}/Categories");
+
+            return View(new EventDetailViewModel
+            {
+                Event = ev.Data,
+                Categories = cats.Data ?? new List<ApiCategory>()
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Enter(int eventId, int categoryId)
+        {
+            int userId = HttpContext.Session.GetInt32("UserId")!.Value;
+
+            var result = await _api.PostAsync<object>($"api/categories/{categoryId}/entries",
+                new { participantId = userId });
+
+            if (result.Success)
+                TempData["Success"] = "You're entered! See it under My Entries.";
+            else
+                TempData["Error"] = result.Message;
+
+            return RedirectToAction("EventDetail", new { id = eventId });
+        }
+
+
     }
 }

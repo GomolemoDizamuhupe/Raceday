@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Backend
 {
@@ -11,7 +12,57 @@ namespace Part2_Raceday.Backend
         Events events = new Events();
 
         private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+        /****************************/
 
+        // > 0 = new EntryId, -1 = not a participant, -2 = category not found,
+        // -3 = already entered, -4 = category full
+        public int create_entry(int participant_id, int category_id)
+        {
+            if (events.role_valiation(participant_id) != "participant") return -1;
+
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                int max;
+                using (SqlCommand cmd = new SqlCommand("SELECT MaxParticipants FROM Categories WHERE CategoryId = @CategoryId;", connect))
+                {
+                    cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                    object? found = cmd.ExecuteScalar();
+                    if (found == null) return -2;
+                    max = (int)found;
+                }
+
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Entries WHERE ParticipantId = @ParticipantId AND CategoryId = @CategoryId AND Status <> 'Cancelled';", connect))
+                {
+                    cmd.Parameters.AddWithValue("@ParticipantId", participant_id);
+                    cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                    if ((int)cmd.ExecuteScalar() > 0) return -3;
+                }
+
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Entries WHERE CategoryId = @CategoryId AND Status <> 'Cancelled';", connect))
+                {
+                    cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                    if ((int)cmd.ExecuteScalar() >= max) return -4;
+                }
+
+                string insert = @"INSERT INTO Entries (ParticipantId, CategoryId, EntryDate, Status)
+                          OUTPUT INSERTED.EntryId
+                          VALUES (@ParticipantId, @CategoryId, @EntryDate, 'Confirmed');";
+
+                using (SqlCommand cmd = new SqlCommand(insert, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ParticipantId", participant_id);
+                    cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                    cmd.Parameters.AddWithValue("@EntryDate", DateTime.Today);
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        /****************************/
         public string uploading_entry(int ParticipantId, string CategoryId, string EntryDate, string Status)
         {
             string message = string.Empty;

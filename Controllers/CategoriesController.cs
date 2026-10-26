@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Part2_Raceday.Backend;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Controllers
 {
@@ -11,10 +12,16 @@ namespace Part2_Raceday.Controllers
         Categories categories = new Categories();
 
         [HttpGet("{EventId}/Categories")]
+        public IActionResult event_categories(int EventId)
+        {
+            return Ok(categories.get_categories_for_event(EventId));
+        }
+
+        /*[HttpGet("{EventId}/Categories")]
         public List<string> event_categories(int EventId)
         {
             return categories.get_event_category(EventId);
-        }
+        }*/
 
         [HttpPost]
         public string adding_category(int eventId, string name, string distanceKm, int maxParticipants)

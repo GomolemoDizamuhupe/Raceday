@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Backend
 {
@@ -10,7 +11,43 @@ namespace Part2_Raceday.Backend
         Events events = new Events();
 
         private const string connection_string = @"Data source=(localdb)\MSSQLLocalDB;database=Race_day;";
+        /*****************************/
 
+        public List<CategoryDto> get_categories_for_event(int event_id)
+        {
+            var list = new List<CategoryDto>();
+
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = "SELECT CategoryId, EventId, Name, DistanceKm, MaxParticipants FROM Categories WHERE EventId = @EventId;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@EventId", event_id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new CategoryDto
+                            {
+                                CategoryId = reader.GetInt32(0),
+                                EventId = reader.GetInt32(1),
+                                Name = reader.GetString(2),
+                                DistanceKm = reader.GetDecimal(3),
+                                MaxParticipants = reader.GetInt32(4)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        /*****************************/
         public List<string> get_event_category(int event_id)
         {
             List<string> message = new List<string>();
