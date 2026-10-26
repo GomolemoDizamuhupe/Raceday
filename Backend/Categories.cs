@@ -47,6 +47,85 @@ namespace Part2_Raceday.Backend
             return list;
         }
 
+        // Returns new CategoryId, or -1 if the event doesn't exist or isn't owned by this organiser
+        public int create_category(CategoryRequest req)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = @"INSERT INTO Categories (EventId, Name, DistanceKm, MaxParticipants)
+                         OUTPUT INSERTED.CategoryId
+                         SELECT @EventId, @Name, @DistanceKm, @MaxParticipants
+                         WHERE EXISTS (SELECT 1 FROM Events
+                                       WHERE EventId = @EventId AND OrganiserId = @OrganiserId);";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@EventId", req.EventId);
+                    cmd.Parameters.AddWithValue("@OrganiserId", req.OrganiserId);
+                    cmd.Parameters.AddWithValue("@Name", req.Name);
+                    cmd.Parameters.AddWithValue("@DistanceKm", req.DistanceKm);
+                    cmd.Parameters.AddWithValue("@MaxParticipants", req.MaxParticipants);
+
+                    object? result = cmd.ExecuteScalar();
+                    return result == null ? -1 : (int)result;
+                }
+            }
+        }
+
+        public bool update_category(int category_id, CategoryRequest req)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                string query = @"UPDATE c SET c.Name = @Name, c.DistanceKm = @DistanceKm, c.MaxParticipants = @MaxParticipants
+                         FROM Categories c
+                         JOIN Events e ON c.EventId = e.EventId
+                         WHERE c.CategoryId = @CategoryId AND e.OrganiserId = @OrganiserId;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Name", req.Name);
+                    cmd.Parameters.AddWithValue("@DistanceKm", req.DistanceKm);
+                    cmd.Parameters.AddWithValue("@MaxParticipants", req.MaxParticipants);
+                    cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                    cmd.Parameters.AddWithValue("@OrganiserId", req.OrganiserId);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // 1 = deleted, 0 = not found, -1 = category still has a route or entries
+        public int delete_category_by_id(int category_id, int organiser_id)
+        {
+            try
+            {
+                using (SqlConnection connect = new SqlConnection(connection_string))
+                {
+                    connect.Open();
+
+                    string query = @"DELETE c FROM Categories c
+                             JOIN Events e ON c.EventId = e.EventId
+                             WHERE c.CategoryId = @CategoryId AND e.OrganiserId = @OrganiserId;";
+
+                    using (SqlCommand cmd = new SqlCommand(query, connect))
+                    {
+                        cmd.Parameters.AddWithValue("@CategoryId", category_id);
+                        cmd.Parameters.AddWithValue("@OrganiserId", organiser_id);
+
+                        return cmd.ExecuteNonQuery() > 0 ? 1 : 0;
+                    }
+                }
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                return -1;
+            }
+        }
+
         /*****************************/
         public List<string> get_event_category(int event_id)
         {

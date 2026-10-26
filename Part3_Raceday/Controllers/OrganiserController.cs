@@ -104,5 +104,92 @@ namespace Part3_Raceday.Controllers
 
             return RedirectToAction("Events");
         }
+
+        public async Task<IActionResult> Categories(int id)
+        {
+            var ev = await _api.GetAsync<ApiEvent>($"api/Events/{id}");
+
+            if (!ev.Success || ev.Data == null || ev.Data.OrganiserId != UserId)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("Events");
+            }
+
+            var cats = await _api.GetAsync<List<ApiCategory>>($"api/Categories/{id}/Categories");
+
+            return View(new CategoriesPageViewModel
+            {
+                Event = ev.Data,
+                Categories = cats.Data ?? new List<ApiCategory>()
+            });
+        }
+
+        [HttpGet]
+        public IActionResult CreateCategory(int eventId) =>
+            View("CategoryForm", new CategoryFormViewModel { EventId = eventId });
+
+        [HttpGet]
+        public async Task<IActionResult> EditCategory(int id, int eventId)
+        {
+            var cats = await _api.GetAsync<List<ApiCategory>>($"api/Categories/{eventId}/Categories");
+            var c = cats.Data?.FirstOrDefault(x => x.CategoryId == id);
+
+            if (c == null)
+            {
+                TempData["Error"] = "Category not found.";
+                return RedirectToAction("Categories", new { id = eventId });
+            }
+
+            return View("CategoryForm", new CategoryFormViewModel
+            {
+                CategoryId = c.CategoryId,
+                EventId = c.EventId,
+                Name = c.Name,
+                DistanceKm = c.DistanceKm,
+                MaxParticipants = c.MaxParticipants
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCategory(CategoryFormViewModel model)
+        {
+            if (!ModelState.IsValid) return View("CategoryForm", model);
+
+            var body = new
+            {
+                organiserId = UserId,
+                eventId = model.EventId,
+                name = model.Name,
+                distanceKm = model.DistanceKm,
+                maxParticipants = model.MaxParticipants
+            };
+
+            var result = model.CategoryId == 0
+                ? await _api.PostAsync<object>("api/Categories", body)
+                : await _api.PutAsync<object>($"api/Categories/{model.CategoryId}", body);
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View("CategoryForm", model);
+            }
+
+            TempData["Success"] = model.CategoryId == 0 ? "Category added." : "Category updated.";
+            return RedirectToAction("Categories", new { id = model.EventId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id, int eventId)
+        {
+            var result = await _api.DeleteAsync<object>($"api/Categories/{id}?organiserId={UserId}");
+
+            if (result.Success)
+                TempData["Success"] = "Category deleted.";
+            else
+                TempData["Error"] = result.Message;
+
+            return RedirectToAction("Categories", new { id = eventId });
+        }
+
     }
 }
