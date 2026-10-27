@@ -139,6 +139,57 @@ namespace Part2_Raceday.Backend
             }
         }
 
+        // Returns null if the event isn't owned by this organiser
+        public List<EventEntryDto>? get_entries_for_event(int event_id, int organiser_id)
+        {
+            var list = new List<EventEntryDto>();
+
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                using (SqlCommand owns = new SqlCommand("SELECT COUNT(*) FROM Events WHERE EventId = @EventId AND OrganiserId = @OrganiserId;", connect))
+                {
+                    owns.Parameters.AddWithValue("@EventId", event_id);
+                    owns.Parameters.AddWithValue("@OrganiserId", organiser_id);
+                    if ((int)owns.ExecuteScalar() == 0) return null;
+                }
+
+                string query = @"SELECT en.EntryId, en.ParticipantId, u.Name, u.Surname, u.Email,
+                                en.CategoryId, c.Name, en.EntryDate, en.Status
+                         FROM Entries en
+                         JOIN Users u ON en.ParticipantId = u.UserId
+                         JOIN Categories c ON en.CategoryId = c.CategoryId
+                         WHERE c.EventId = @EventId
+                         ORDER BY c.Name, en.EntryDate;";
+
+                using (SqlCommand cmd = new SqlCommand(query, connect))
+                {
+                    cmd.Parameters.AddWithValue("@EventId", event_id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new EventEntryDto
+                            {
+                                EntryId = reader.GetInt32(0),
+                                ParticipantId = reader.GetInt32(1),
+                                ParticipantName = reader.GetString(2) + " " + reader.GetString(3),
+                                Email = reader.GetString(4),
+                                CategoryId = reader.GetInt32(5),
+                                CategoryName = reader.GetString(6),
+                                EntryDate = reader.GetDateTime(7),
+                                Status = reader.GetString(8)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
         /****************************/
         public string uploading_entry(int ParticipantId, string CategoryId, string EntryDate, string Status)
         {

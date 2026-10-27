@@ -54,6 +54,17 @@ namespace Part2_Raceday.Controllers
             return NoContent();
         }
 
+        [HttpGet("{eventId}")]
+        public IActionResult getting_organiser_event_entries(int eventId, int organiserId)
+        {
+            var list = entries.get_entries_for_event(eventId, organiserId);
+
+            if (list == null)
+                return StatusCode(403, new { message = "Event not found or you don't own it." });
+
+            return Ok(list);
+        }
+
         /*[HttpPost("/categories/{CategoryId}/entries")]
         public string adding_participant_entry(int ParticipantId, string CategoryId, string EntryDate, string Status) 
         {
@@ -66,11 +77,11 @@ namespace Part2_Raceday.Controllers
             return entries.get_participant_event_entries(ParticipantId);
         }*/
 
-        [HttpGet("{EventId}")]
+        /*[HttpGet("{EventId}")]
         public List<string> getting_organiser_event_entries(int OrganiserId, int EventId)
         {
             return entries.displaying_organiser_event_entries(OrganiserId, EventId);
-        }
+        }*/
 
         /*[HttpDelete("{EntryId}")]
         public string deleteing_participant_entry(int EntryId, int ParticipantId)

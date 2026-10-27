@@ -1,5 +1,91 @@
-﻿@{
+﻿@model Part3_Raceday.Models.DashboardViewModel
+@{
     ViewData["Title"] = "Organiser Dashboard";
 }
-<h2>Organiser Dashboard</h2>
-<p>Your events and enrolments will appear here.</p>
+
+<h2 class="mb-3">Organiser Dashboard</h2>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="display-6">@Model.TotalEvents</div>
+                <div class="text-muted">Events created</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="display-6">@Model.UpcomingEvents</div>
+                <div class="text-muted">Upcoming events</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <div class="display-6">@Model.TotalEnrolments</div>
+                <div class="text-muted">Total enrolments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Your events</h4>
+
+@if (!Model.Rows.Any())
+{
+    <div class="alert alert-info">
+        You haven't created any events yet.
+        <a asp-action="CreateEvent">Create your first event</a>.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Enrolments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Rows)
+            {
+                bool past = r.Event.EventDate.Date < DateTime.Today;
+
+                <tr>
+                    <td>
+                        @r.Event.Name
+                        @if (past)
+                        {
+                            <span class="badge bg-secondary ms-1">Past</span>
+                        }
+                        else
+                        {
+
+                            <span class="badge bg-success ms-1">Upcoming</span>
+                        }
+                    </td>
+                    <td>@r.Event.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@r.Event.Location</td>
+                    <td><span class="badge bg-dark">@r.Enrolments</span></td>
+                    <td class="text-end">
+                        <a asp-action="Enrolments" asp-route-id="@r.Event.EventId" class="btn btn-outline-success btn-sm">Enrolments</a>
+                        <a asp-action="Categories" asp-route-id="@r.Event.EventId" class="btn btn-outline-primary btn-sm">Categories</a>
+                        <a asp-action="EditEvent" asp-route-id="@r.Event.EventId" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

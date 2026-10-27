@@ -17,7 +17,34 @@ namespace Part3_Raceday.Controllers
 
         private int UserId => HttpContext.Session.GetInt32("UserId")!.Value;
 
-        public IActionResult Dashboard() => View();
+        public async Task<IActionResult> Dashboard()
+        {
+            var vm = new DashboardViewModel();
+
+            var result = await _api.GetAsync<List<ApiEvent>>("api/Events");
+
+            if (!result.Success || result.Data == null)
+            {
+                vm.Error = result.Message;
+                return View(vm);
+            }
+
+            var mine = result.Data.Where(e => e.OrganiserId == UserId).OrderBy(e => e.EventDate).ToList();
+
+            foreach (var ev in mine)
+            {
+                var entries = await _api.GetAsync<List<ApiEventEntry>>($"api/Entries/{ev.EventId}?organiserId={UserId}");
+                int count = entries.Data?.Count ?? 0;
+
+                vm.Rows.Add(new DashboardRow { Event = ev, Enrolments = count });
+                vm.TotalEnrolments += count;
+            }
+
+            vm.TotalEvents = mine.Count;
+            vm.UpcomingEvents = mine.Count(e => e.EventDate.Date >= DateTime.Today);
+
+            return View(vm);
+        }
 
         public async Task<IActionResult> Events()
         {
@@ -189,6 +216,33 @@ namespace Part3_Raceday.Controllers
                 TempData["Error"] = result.Message;
 
             return RedirectToAction("Categories", new { id = eventId });
+        }
+
+        public async Task<IActionResult> Enrolments(int id, string? category)
+        {
+            var ev = await _api.GetAsync<ApiEvent>($"api/Events/{id}");
+
+            if (!ev.Success || ev.Data == null || ev.Data.OrganiserId != UserId)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("Events");
+            }
+
+            var entries = await _api.GetAsync<List<ApiEventEntry>>($"api/Entries/{id}?organiserId={UserId}");
+
+            var all = entries.Data ?? new List<ApiEventEntry>();
+
+            var vm = new EnrolmentsViewModel
+            {
+                Event = ev.Data,
+                Category = category,
+                Categories = all.Select(e => e.CategoryName).Distinct().OrderBy(n => n).ToList(),
+                Entries = string.IsNullOrWhiteSpace(category)
+                    ? all
+                    : all.Where(e => e.CategoryName == category).ToList()
+            };
+
+            return View(vm);
         }
 
     }

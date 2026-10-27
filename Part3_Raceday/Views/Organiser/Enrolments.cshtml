@@ -1,0 +1,64 @@
+﻿@model Part3_Raceday.Models.EnrolmentsViewModel
+@{
+    ViewData["Title"] = "Enrolments";
+}
+
+<a asp-action="Events" class="btn btn-link ps-0">&larr; Back to my events</a>
+
+<h2 class="mb-1">@Model.Event.Name: enrolments</h2>
+<p class="text-muted">@Model.Event.EventDate.ToString("dd MMM yyyy") &middot; @Model.Event.Location</p>
+
+<form method="get" asp-action="Enrolments" asp-route-id="@Model.Event.EventId" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <select name="category" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c" selected="@(c == Model.Category)">@c</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Entries.Any())
+{
+    <div class="alert alert-info">No one has enrolled for this event yet.</div>
+}
+else
+{
+    <p><strong>@Model.Entries.Count</strong> participant(s)</p>
+
+    <table class="table align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Participant</th>
+                <th>Email</th>
+                <th>Category</th>
+                <th>Entered on</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model.Entries)
+            {
+                string badge = e.Status switch
+                {
+                    "Confirmed" => "bg-success",
+                    "Pending" => "bg-warning text-dark",
+                    _ => "bg-secondary"
+                };
+
+                <tr>
+                    <td>@e.ParticipantName</td>
+                    <td>@e.Email</td>
+                    <td>@e.CategoryName</td>
+                    <td>@e.EntryDate.ToString("dd MMM yyyy")</td>
+                    <td><span class="badge @badge">@e.Status</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
