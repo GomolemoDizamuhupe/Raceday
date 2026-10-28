@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Part2_Raceday.Backend;
+using Part2_Raceday.Models;
 
 namespace Part2_Raceday.Controllers
 {
@@ -10,25 +10,44 @@ namespace Part2_Raceday.Controllers
     {
         Routes routes = new Routes();
 
-        [HttpGet("{categoryId}route")]
-        public string get_route_for_category(int categoryId) 
+        [HttpGet("category/{categoryId}")]
+        public IActionResult get_route_for_category(int categoryId)
         {
-            return routes.get_route_for_category(categoryId);
+            var route = routes.get_route_by_category(categoryId);
+
+            if (route == null)
+                return NotFound(new { message = "No route found for this category." });
+
+            return Ok(route);
         }
 
-
-        [HttpPost("{categoryId}route")]
-        public string creating_route(int categoryId, string StartPoint, string EndPoint, int ElevationGainM, string MapUrl)
+        [HttpPost]
+        public IActionResult creating_route([FromBody] RouteRequest req)
         {
-            return routes.uploading_route(categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
+            if (string.IsNullOrWhiteSpace(req.StartPoint) || string.IsNullOrWhiteSpace(req.EndPoint))
+                return BadRequest(new { message = "Start point and end point are required." });
+
+            int result = routes.create_route(req);
+
+            if (result == -1)
+                return StatusCode(403, new { message = "Category not found or you don't own its event." });
+
+            if (result == -2)
+                return Conflict(new { message = "This category already has a route." });
+
+            return Created($"/api/Routes/category/{req.CategoryId}", new { routeId = result });
         }
 
-        [HttpPut("{RouteId}")]
-        public string updating_route(int OrganiserId, int RouteId, int categoryId, string StartPoint, string EndPoint, int ElevationGainM, string MapUrl)
+        [HttpPut("{routeId}")]
+        public IActionResult updating_route(int routeId, [FromBody] RouteRequest req)
         {
-            return routes.editing_route(OrganiserId, RouteId, categoryId, StartPoint, EndPoint, ElevationGainM, MapUrl);
+            if (string.IsNullOrWhiteSpace(req.StartPoint) || string.IsNullOrWhiteSpace(req.EndPoint))
+                return BadRequest(new { message = "Start point and end point are required." });
+
+            if (!routes.update_route(routeId, req))
+                return NotFound(new { message = "Route not found for this organiser." });
+
+            return Ok(new { message = "Route updated." });
         }
-
-
     }
 }

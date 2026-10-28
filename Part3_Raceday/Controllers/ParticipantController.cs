@@ -66,11 +66,23 @@ namespace Part3_Raceday.Controllers
             }
 
             var cats = await _api.GetAsync<List<ApiCategory>>($"api/Categories/{id}/Categories");
+            var categories = cats.Data ?? new List<ApiCategory>();
+
+            var routes = new Dictionary<int, ApiRoute>();
+
+            foreach (var c in categories)
+            {
+                var r = await _api.GetAsync<ApiRoute>($"api/Routes/category/{c.CategoryId}");
+
+                if (r.Success && r.Data != null)
+                    routes[c.CategoryId] = r.Data;
+            }
 
             return View(new EventDetailViewModel
             {
                 Event = ev.Data,
-                Categories = cats.Data ?? new List<ApiCategory>()
+                Categories = categories,
+                Routes = routes
             });
         }
 

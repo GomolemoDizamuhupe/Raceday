@@ -47,6 +47,22 @@
                     <h5>@c.Name</h5>
                     <p class="mb-1">@c.DistanceKm km</p>
                     <p class="text-muted">Max @c.MaxParticipants participants</p>
+
+                    @if (Model.Routes.TryGetValue(c.CategoryId, out var route))
+                    {
+                        <hr />
+                        <p class="mb-1"><strong>Route</strong></p>
+                        <p class="mb-1 small">@route.StartPoint &rarr; @route.EndPoint</p>
+                        @if (route.ElevationGainM != null)
+                        {
+                            <p class="mb-1 small">Elevation gain: @route.ElevationGainM m</p>
+                        }
+                        @if (!string.IsNullOrEmpty(route.MapUrl))
+                        {
+                            <p class="small"><a href="@route.MapUrl" target="_blank" rel="noopener">View map</a></p>
+                        }
+                    }
+
                     <form asp-action="Enter" method="post">
                         <input type="hidden" name="eventId" value="@Model.Event.EventId" />
                         <input type="hidden" name="categoryId" value="@c.CategoryId" />

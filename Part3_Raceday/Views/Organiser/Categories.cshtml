@@ -37,6 +37,8 @@ else
                     <td>@c.DistanceKm km</td>
                     <td>@c.MaxParticipants</td>
                     <td class="text-end">
+                        <a asp-action="EditRoute" asp-route-categoryId="@c.CategoryId" asp-route-eventId="@Model.Event.EventId"
+                           class="btn btn-outline-primary btn-sm">Route</a>
                         <a asp-action="EditCategory" asp-route-id="@c.CategoryId" asp-route-eventId="@Model.Event.EventId"
                            class="btn btn-outline-dark btn-sm">Edit</a>
                         <form asp-action="DeleteCategory" asp-route-id="@c.CategoryId" asp-route-eventId="@Model.Event.EventId"

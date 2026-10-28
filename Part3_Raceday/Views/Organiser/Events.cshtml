@@ -49,6 +49,7 @@ else
                     <td>@(e.DistanceKm != null ? e.DistanceKm + " km" : "")</td>
                     <td class="text-end">
                         <a asp-action="Enrolments" asp-route-id="@e.EventId" class="btn btn-outline-success btn-sm">Enrolments</a>
+                        <a asp-action="Results" asp-route-id="@e.EventId" class="btn btn-outline-warning btn-sm">Results</a>
                         <a asp-action="Categories" asp-route-id="@e.EventId" class="btn btn-outline-primary btn-sm">Categories</a>
                         <a asp-action="EditEvent" asp-route-id="@e.EventId" class="btn btn-outline-dark btn-sm">Edit</a>
                         <form asp-action="DeleteEvent" asp-route-id="@e.EventId" method="post" class="d-inline"

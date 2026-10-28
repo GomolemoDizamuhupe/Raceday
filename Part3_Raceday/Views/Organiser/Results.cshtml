@@ -1,0 +1,65 @@
+﻿@model Part3_Raceday.Models.ResultsEntryViewModel
+@{
+    ViewData["Title"] = "Results";
+}
+
+<a asp-action="Events" class="btn btn-link ps-0">&larr; Back to my events</a>
+
+<h2 class="mb-1">@Model.Event.Name: results</h2>
+<p class="text-muted">@Model.Event.EventDate.ToString("dd MMM yyyy") &middot; @Model.Event.Location</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.EventHasHappened)
+{
+    <div class="alert alert-warning">
+        This event hasn't taken place yet. Results can be captured once the event date has arrived.
+    </div>
+}
+else if (!Model.Rows.Any())
+{
+    <div class="alert alert-info">No one enrolled for this event, so there are no results to capture.</div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Participant</th>
+                <th>Category</th>
+                <th>Finish time (hh:mm:ss)</th>
+                <th>Position</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Rows)
+            {
+                <tr>
+                    <form asp-action="SaveResult" method="post">
+                        <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                        <input type="hidden" name="entryId" value="@r.EntryId" />
+                        <input type="hidden" name="resultId" value="@r.ResultId" />
+
+                    <td>@r.ParticipantName</td>
+                    <td>@r.CategoryName</td>
+                    <td><input name="finishTime" value="@r.FinishTime" class="form-control form-control-sm" placeholder="01:45:30" /></td>
+                    <td><input name="position" type="number" min="1" value="@r.Position" class="form-control form-control-sm" /></td>
+                    <td class="text-end">
+                        <button class="btn btn-sm @(r.ResultId == null ? "btn-primary" : "btn-outline-dark")">
+                            @(r.ResultId == null ? "Save" : "Update")
+                        </button>
+                    </td>
+                    </form>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
