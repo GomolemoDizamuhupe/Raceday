@@ -3,14 +3,14 @@
     ViewData["Title"] = "Upcoming Events";
 }
 
-<h2 class="mb-3">Upcoming Events</h2>
+<h2 class="mb-3">Upcoming events</h2>
 
 @if (Model.Error != null)
 {
     <div class="alert alert-danger">@Model.Error</div>
 }
 
-<form method="get" class="row g-2 mb-4">
+<form method="get" class="row g-2 mb-5">
     <div class="col-md-4">
         <input name="search" value="@Model.Search" class="form-control" placeholder="Search by name or description" />
     </div>
@@ -33,26 +33,30 @@
 
 @if (!Model.Events.Any() && Model.Error == null)
 {
-    <div class="alert alert-info">No upcoming events match your search.</div>
+    <div class="alert alert-info">No upcoming events match your search. Try a different name or location.</div>
 }
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-3 g-5">
     @foreach (var e in Model.Events)
     {
         <div class="col">
-            <div class="card h-100 shadow-sm">
-                @if (!string.IsNullOrEmpty(e.BannerUrl))
-                {
-                    <img src="@e.BannerUrl" class="card-img-top" style="height:160px;object-fit:cover" alt="@e.Name banner" />
-                }
-                else
-                {
-                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height:160px">No banner</div>
-                }
-                <div class="card-body">
+            <div class="card event-card h-100">
+                <div class="event-banner">
+                    @if (!string.IsNullOrEmpty(e.BannerUrl))
+                    {
+                        <img src="@e.BannerUrl" class="event-banner-media" alt="@e.Name banner" />
+                    }
+                    else
+                    {
+                        <div class="event-banner-fallback" role="img" aria-label="No banner uploaded"></div>
+                    }
+                    <div class="event-bib">
+                        <partial name="_DateBib" model="e.EventDate" />
+                    </div>
+                </div>
+                <div class="card-body pt-5">
                     <h5 class="card-title">@e.Name</h5>
-                    <p class="mb-1"><strong>@e.EventDate.ToString("dd MMM yyyy")</strong></p>
-                    <p class="mb-1">@e.Location</p>
+                    <p class="mb-2 text-muted">@e.Location</p>
                     @if (!string.IsNullOrEmpty(e.EventType))
                     {
                         <span class="badge bg-dark">@e.EventType</span>
@@ -61,7 +65,7 @@
                     {
                         <span class="badge bg-secondary">@e.DistanceKm km</span>
                     }
-                    <a asp-action="EventDetail" asp-route-id="@e.EventId" class="btn btn-outline-dark btn-sm mt-3 d-block">View details</a>
+                    <a asp-action="EventDetail" asp-route-id="@e.EventId" class="btn btn-primary btn-sm mt-3 d-block">View details</a>
                 </div>
             </div>
         </div>

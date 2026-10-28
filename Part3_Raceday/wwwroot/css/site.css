@@ -1,22 +1,269 @@
+/* RaceDay theme: overrides Bootstrap 5 tokens so every page stays consistent */
+
+:root {
+    --rd-ink: #0E1B3D;
+    --rd-blue: #1E40FF;
+    --rd-blue-dark: #1631C4;
+    --rd-chalk: #F4F6FB;
+    --rd-bib: #FF6B1A;
+    --rd-line: #D9DEEA;
+    --rd-muted: #5B6788;
+    --rd-confirmed: #12A150;
+    --rd-pending: #F5B301;
+    --bs-body-font-family: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --bs-body-color: #1A2444;
+    --bs-body-bg: #F4F6FB;
+    --bs-primary: #1E40FF;
+    --bs-primary-rgb: 30, 64, 255;
+    --bs-link-color-rgb: 30, 64, 255;
+    --bs-link-hover-color-rgb: 22, 49, 196;
+    --bs-border-color: #D9DEEA;
+}
+
+/* Layout basics (keeps the footer at the bottom) */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: var(--rd-chalk);
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    border-top-color: var(--rd-line) !important;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    color: var(--rd-ink);
+    font-weight: 700;
+}
+
+h1, h2 {
+    font-style: italic;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: 2.4rem;
+}
+
+h4 {
+    font-size: 1.6rem;
+}
+
+h5 {
+    font-size: 1.35rem;
+}
+
+.text-muted {
+    color: var(--rd-muted) !important;
+}
+
+/* Keyboard focus */
+:focus-visible {
+    outline: 3px solid var(--rd-blue);
+    outline-offset: 2px;
+}
+
+/* Navbar */
+.navbar-raceday {
+    background: var(--rd-ink);
+}
+
+    .navbar-raceday .navbar-brand {
+        font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+        font-style: italic;
+        font-weight: 800;
+        font-size: 1.8rem;
+        color: #fff;
+    }
+
+    .navbar-raceday .nav-link {
+        color: rgba(255, 255, 255, .78);
+        font-weight: 500;
+    }
+
+        .navbar-raceday .nav-link:hover,
+        .navbar-raceday .nav-link:focus {
+            color: #fff;
+        }
+
+    .navbar-raceday .navbar-text {
+        color: rgba(255, 255, 255, .78);
+    }
+
+/* Buttons */
+.btn {
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--rd-blue);
+    --bs-btn-border-color: var(--rd-blue);
+    --bs-btn-hover-bg: var(--rd-blue-dark);
+    --bs-btn-hover-border-color: var(--rd-blue-dark);
+    --bs-btn-active-bg: #122AA3;
+    --bs-btn-active-border-color: #122AA3;
+    --bs-btn-disabled-bg: var(--rd-blue);
+    --bs-btn-disabled-border-color: var(--rd-blue);
+}
+
+.btn-outline-dark {
+    --bs-btn-color: var(--rd-ink);
+    --bs-btn-border-color: var(--rd-ink);
+    --bs-btn-hover-bg: var(--rd-ink);
+    --bs-btn-hover-border-color: var(--rd-ink);
+    --bs-btn-active-bg: var(--rd-ink);
+}
+
+/* Forms */
+.form-label {
+    font-weight: 600;
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    border-color: #C3CADB;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--rd-blue);
+        box-shadow: 0 0 0 .2rem rgba(30, 64, 255, .18);
+    }
+
+/* Cards and tables: flat, one consistent border */
+.card {
+    border: 1px solid var(--rd-line);
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+    .card.shadow-sm {
+        box-shadow: none !important;
+    }
+
+.table {
+    --bs-table-bg: transparent;
+}
+
+.table-dark {
+    --bs-table-bg: var(--rd-ink);
+    --bs-table-border-color: #25346A;
+}
+
+/* Status badges: Confirmed is green, Pending is amber, everything else is grey */
+.badge {
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+    .badge.bg-success {
+        background-color: var(--rd-confirmed) !important;
+    }
+
+    .badge.bg-warning {
+        background-color: var(--rd-pending) !important;
+        color: #1A1A1A !important;
+    }
+
+/* Event banner with the bib overlapping it */
+.event-banner {
+    position: relative;
+    height: 160px;
+}
+
+.event-banner-lg {
+    height: 220px;
+}
+
+.event-banner-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 7px 7px 0 0;
+}
+
+.event-banner-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px 7px 0 0;
+    background: repeating-linear-gradient(135deg, #16265A 0, #16265A 14px, #1B2F6E 14px, #1B2F6E 28px);
+}
+
+.event-bib {
+    position: absolute;
+    left: 1rem;
+    bottom: -28px;
+}
+
+/* The race bib: the one memorable element */
+.bib {
+    position: relative;
+    width: 76px;
+    background: #fff;
+    border: 2px solid var(--rd-ink);
+    border-radius: 6px;
+    text-align: center;
+    overflow: hidden;
+    font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+
+    .bib::before,
+    .bib::after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #fff;
+    }
+
+    .bib::before {
+        left: 6px;
+    }
+
+    .bib::after {
+        right: 6px;
+    }
+
+.bib-month {
+    background: var(--rd-bib);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.55;
+}
+
+.bib-day {
+    font-size: 2.4rem;
+    font-weight: 800;
+    font-style: italic;
+    line-height: 1;
+    padding-top: .2rem;
+    color: var(--rd-ink);
+}
+
+.bib-year {
+    font-size: .85rem;
+    color: var(--rd-muted);
+    padding-bottom: .3rem;
 }
