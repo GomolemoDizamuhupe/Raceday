@@ -15,7 +15,7 @@ builder.Services.AddSession(o =>
 
 builder.Services.AddHttpClient<ApiService>(c =>
 {
-    c.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    c.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 });
 
 var app = builder.Build();
