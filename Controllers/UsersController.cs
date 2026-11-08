@@ -48,5 +48,18 @@ namespace Part2_Raceday.Controllers
 
             return Ok(new { user.UserId, user.Name, user.Surname, user.Role });
         }
+
+        [HttpPut("me/picture")]
+        public IActionResult update_picture(int userId, [FromBody] PictureRequest req)
+        {
+            if (string.IsNullOrWhiteSpace(req.PictureUrl) || req.PictureUrl.Length > 500)
+                return BadRequest(new { message = "A valid picture path is required." });
+
+            if (!users.set_profile_picture(userId, req.PictureUrl))
+                return NotFound(new { message = "User not found." });
+
+            return Ok(new { message = "Picture saved." });
+        }
+
     }
 }

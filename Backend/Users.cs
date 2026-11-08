@@ -17,7 +17,7 @@ namespace Part2_Raceday.Backend
             {
                 connect.Open();
 
-                using (SqlCommand cmd = new SqlCommand("SELECT UserId, Name, Surname, Email, Role FROM Users WHERE UserId = @UserId;", connect))
+                using (SqlCommand cmd = new SqlCommand("SELECT UserId, Name, Surname, Email, Role, ProfilePictureUrl FROM Users WHERE UserId = @UserId;", connect))
                 {
                     cmd.Parameters.AddWithValue("@UserId", user_id);
 
@@ -31,9 +31,25 @@ namespace Part2_Raceday.Backend
                             Name = reader.GetString(1),
                             Surname = reader.GetString(2),
                             Email = reader.GetString(3),
-                            Role = reader.GetString(4).ToLower()
+                            Role = reader.GetString(4).ToLower(),
+                            ProfilePictureUrl = reader.IsDBNull(5) ? null : reader.GetString(5)
                         };
                     }
+                }
+            }
+        }
+
+        public bool set_profile_picture(int user_id, string url)
+        {
+            using (SqlConnection connect = new SqlConnection(connection_string))
+            {
+                connect.Open();
+
+                using (SqlCommand cmd = new SqlCommand("UPDATE Users SET ProfilePictureUrl = @Url WHERE UserId = @UserId;", connect))
+                {
+                    cmd.Parameters.AddWithValue("@Url", url);
+                    cmd.Parameters.AddWithValue("@UserId", user_id);
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
