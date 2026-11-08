@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, part3 ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore Part2_Raceday.sln
+
+      - name: Build API, tests and MVC app
+        run: dotnet build Part2_Raceday.sln --no-restore --configuration Release
+
+      - name: Start LocalDB and create the database
+        run: |
+          SqlLocalDB start MSSQLLocalDB
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -b -i "Race_day.sql"
+
+      - name: Run tests
+        run: dotnet test Part2_Raceday.sln --no-build --configuration Release
