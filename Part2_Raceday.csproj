@@ -17,6 +17,10 @@
     <Content Remove="Part3_Raceday\**" />
     <EmbeddedResource Remove="Part3_Raceday\**" />
     <None Remove="Part3_Raceday\**" />
+    <Compile Remove="Test_Raceday\**" />
+    <Content Remove="Test_Raceday\**" />
+    <EmbeddedResource Remove="Test_Raceday\**" />
+    <None Remove="Test_Raceday\**" />
   </ItemGroup>
 
 </Project>
