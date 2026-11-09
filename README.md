@@ -1,4 +1,4 @@
-# RaceDay
+<img width="1365" height="680" alt="image" src="https://github.com/user-attachments/assets/e9360345-40e7-4bfd-bfba-f20a88d0e538" /># RaceDay
 
 A full-stack web-based event management system for the South African road running, walking, and cycling community. RaceDay lets Event Organisers create and manage events, categories, routes and results, while Participants can browse events, enter categories, track their entries, and view their personal results.
 
@@ -8,8 +8,8 @@ A full-stack web-based event management system for the South African road runnin
 **GitHub Repo:** [GomolemoDizamuhupe/Raceday](https://github.com/GomolemoDizamuhupe/Raceday)
 **Part 3 branch:** `part3`
 **Part 1 Demo Video:** https://youtu.be/ZRrgUtRMAuo
-**Part 2 Demo Video:** _add YouTube link here_
-**Part 3 Demo Video:** _add YouTube link here_
+**Part 2 Demo Video:** https://youtu.be/ecFRMHqhjps
+**Part 3 Demo Video:** https://youtu.be/TujusO3_SU8
 **Part 1 Document:** [Database Schema, API Request Methods and ERD (PDF)](https://github.com/GomolemoDizamuhupe/Raceday/blob/master/DATABASE%20SCHEMA%2C%20API%20REQUEST%20METHODS%20AND%20ERD.pdf)
 **SQL Script:** [Race_day.sql](Race_day.sql)
 
@@ -197,11 +197,7 @@ Run them with `dotnet test` or Test Explorer in Visual Studio.
 
 GitHub Actions (`.github/workflows/main.yml`) runs on pushes to `main`, `master` and `part3`. It builds the whole solution (API, tests and MVC app), starts LocalDB, creates the database from `Race_day.sql`, and runs the tests.
 
-_Add the green build screenshot here:_
-
-```
-<img width="..." alt="Part 3 GitHub Actions" src="..." />
-```
+<img width="1365" height="680" alt="image" src="https://github.com/user-attachments/assets/6db7e29f-fd2c-4cbf-8906-6bb3df08f982" />
 
 ## Part 1 Summary
 
