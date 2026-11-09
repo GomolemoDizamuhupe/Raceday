@@ -1,4 +1,4 @@
-<img width="1365" height="680" alt="image" src="https://github.com/user-attachments/assets/e9360345-40e7-4bfd-bfba-f20a88d0e538" /># RaceDay
+RaceDay
 
 A full-stack web-based event management system for the South African road running, walking, and cycling community. RaceDay lets Event Organisers create and manage events, categories, routes and results, while Participants can browse events, enter categories, track their entries, and view their personal results.
 
